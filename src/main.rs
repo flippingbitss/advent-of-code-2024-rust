@@ -7,9 +7,10 @@ mod day03;
 mod day04;
 mod day05;
 mod day06;
+mod day07;
 
 fn main() {
-    let input = include_str!("../inputs/day06.in");
-    println!("{}", day06::part_one(input));
-    println!("{}", day06::part_two(input));
+    let input = include_str!("../inputs/day07.in");
+    println!("{}", day07::part_one(input));
+    println!("{}", day07::part_two(input));
 }
