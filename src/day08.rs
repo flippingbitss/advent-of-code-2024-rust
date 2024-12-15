@@ -1,4 +1,4 @@
-type Vec2 = (usize, usize);
+type Vec2 = (isize, isize);
 
 struct Grid {
     positions: Vec<Vec<Vec2>>,
@@ -17,7 +17,7 @@ fn parse(input: &str) -> Grid {
     for (y, line) in lines.into_iter().enumerate() {
         for (x, c) in line.into_iter().enumerate() {
             if c != b'.' {
-                positions[c as usize].push((x, y));
+                positions[c as usize].push((x as isize, y as isize));
             }
         }
     }
@@ -38,13 +38,15 @@ pub fn part_one(input: &str) -> usize {
         for curr in group.iter() {
             for next in group.iter() {
                 if curr != next {
-                    let diff_x = next.0.wrapping_sub(curr.0);
-                    let diff_y = next.1.wrapping_sub(curr.1);
+                    let diff_x = next.0 - curr.0;
+                    let diff_y = next.1 - curr.1;
 
-                    let anti_x = curr.0.wrapping_add(diff_x.wrapping_mul(2));
-                    let anti_y = curr.1.wrapping_add(diff_y.wrapping_mul(2));
+                    let anti_x = curr.0 + diff_x * 2;
+                    let anti_y = curr.1 + diff_y * 2;
 
-                    let existing = antinodes.get_mut(anti_y).and_then(|xs| xs.get_mut(anti_x));
+                    let existing = antinodes
+                        .get_mut(anti_y as usize)
+                        .and_then(|xs| xs.get_mut(anti_x as usize));
 
                     match existing {
                         Some(val @ false) => {
@@ -80,22 +82,22 @@ pub fn part_two(input: &str) -> usize {
     for group in grid.positions {
         for start in group.iter() {
             if group.len() - 1 >= 2 {
-                if place_antinode(start.0, start.1) {
+                if place_antinode(start.0 as usize, start.1 as usize) {
                     result += 1;
                 }
             }
             for end in group.iter() {
                 if start != end {
-                    let diff_x = end.0.wrapping_sub(start.0);
-                    let diff_y = end.1.wrapping_sub(start.1);
+                    let diff_x = end.0 - start.0;
+                    let diff_y = end.1 - start.1;
                     let mut curr = *start;
                     let mut next = *end;
 
-                    while curr.0 < grid.width && curr.1 < grid.height {
-                        let anti_x = curr.0.wrapping_add(diff_x.wrapping_mul(2));
-                        let anti_y = curr.1.wrapping_add(diff_y.wrapping_mul(2));
+                    while (curr.0 as usize) < grid.width && (curr.1 as usize) < grid.height {
+                        let anti_x = curr.0 + diff_x * 2;
+                        let anti_y = curr.1 + diff_y * 2;
 
-                        if place_antinode(anti_x, anti_y) {
+                        if place_antinode(anti_x as usize, anti_y as usize) {
                             result += 1;
                         }
 
